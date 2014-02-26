@@ -1,55 +1,95 @@
+# Neural Network Model: 
+# 	http://en.wikipedia.org/wiki/Artificial_neuron#Spreadsheet_example 
+
+from utils import * 
+from graphics import * 
+from time import sleep 
+import random 
+
 class Neuron: 
-	def __init__(self,x1,x2,w1,w2): 
+	def __init__(self,ntype,weight,idnum): 
+		self.type = ntype
+		self.id = idnum
 		self.th = 0.5 # threshold 
 		self.lr = 0.2 # learning rate 
-		self.x1 = x1 # sensor values 
-		self.x2 = x2 
-		self.z = 1 if bool(x1 or x2) else 0 # desired output 
-		self.w1 = w1 # weights 
-		self.w2 = w2 
-		self.c1 = self.x1*self.w1 # calculated 
-		self.c2 = self.x2*self.w2 
-		self.s = self.c1+self.c2 # sum 
-		self.n = 1 if self.s>self.th else 0 # network 
-		self.e = self.z-self.n # error 
-		self.r = self.lr*self.e #correction 
-		# self.w1 = self.r+self.w1 # final weights 
-		# self.w2 = self.r+self.w2 
+		self.weight = weight # weight value 
+		self.axon = [] # connection to other neurons 
+		self.sub = 0 # subtotal value of sensor and weight 
+		self.x = 0 
+		self.y = 0 
 
-	def show(self): 
-		print str(self.th)+"\t"+str(self.lr)+"\t"+str(self.x1)+"\t"+str(self.x2)+"\t"+str(self.z)+"\t"+str(self.w1)+"\t"+str(self.w2)+"\t"+str(self.c1)+"\t"+str(self.c2)+"\t"+str(self.s)+"\t"+str(self.n)+"\t"+str(self.e)+"\t"+str(self.r)+"\t"+str(self.r+self.w1)+"\t"+str(self.r+self.w2)  
+	def lightup(self,sensor): 
+		if(self.is_terminal() or sensor>0):
+			gb = 0 
+			self.body.setFill(self.get_color(gb)) 
+			self.send(sensor) 
+			while(gb<=255): 
+				self.body.setFill(self.get_color(gb)) 
+				sleep(0.03) 
+				gb += 51 
 
+	def send(self,sensor): 
+		expected = 1 if bool(sensor) else 0 # desired output 
+		self.sub += sensor*self.weight # accumulated value 
 
-def flip(n): 
-	return 1 if n==0 else 0 
+		# determine whether there's value to send 
+		# print str(self.sub)+">"+str(self.th) 
+		while(self.sub>self.th): 
+			out = 1 
+			self.sub -= self.th # correct weight value based on error margin 
+			error = expected-out 
+			correction = self.lr*error 
+			self.weight += correction 
 
-def main(): 
-	print "TH\tLR\tX1\tX2\tZ\tW1\tW2\tC1\tC2\tS\t N\t E\t R\tW1\tW2" 
+			# print str(self.id)+"->"+str(out) 
+			for synapse in self.axon: 
+				synapse.lightup(out) 
 
-	x1mult = 0 
-	x2mult = 0 
-	wmult = 0 
+	def add_synapse(self,neuron): 
+		self.axon.append(neuron) 
 
-	x1 = 1
+	def draw(self,win,x,y): 
+		self.x = x 
+		self.y = y 
+		point = Point(x,y) 
+		self.body = Circle(point,20) 
 
-	for i in range(12): 
-		x1 = flip(x1) if (x1mult%4==0 or x1mult%4==2) else x1 
-		x2 = 0 if x2mult%2==0 else 1 
-		if(wmult<2): 
-			w1 = 0.1 
-		elif(wmult<3): 
-			w1 = 0.3 
-		elif(wmult<7): 
-			w1 = 0.5 
+		self.body.draw(win) 
+
+		if(self.id>0): 
+			text = Text(point,str(self.id))
+			text.draw(win) 
+
+	def get_coords(self):
+		return self.x,self.y
+
+	def is_sensorial(self): 
+		return self.type==SENSORIAL 
+
+	def is_transmitter(self): 
+		return self.type==TRANSMITTER 
+
+	def is_terminal(self): 
+		return self.type==TERMINAL 
+
+	def is_motor(self): 
+		return self.type==MOTOR 
+
+	def get_color(self,gb): 
+		if(self.is_sensorial()): 
+			return color_rgb(255,gb,gb) 
+		elif(self.is_terminal()): 
+			return color_rgb(gb,gb,255) 
+		elif(self.is_transmitter()): 
+			return color_rgb(255,255,gb) 
 		else: 
-			w1 = 0.7 
-		w2 = w1+0.2 
+			return color_rgb(gb,255,gb) 
 
-		n = Neuron(x1,x2,w1,w2) 
-		n.show() 
+	def __str__(self): 
+		out = "N#"+str(self.id)+"\n" 
 
-		x1mult+=1 
-		x2mult+=1 
-		wmult+=1 
+		for synapse in self.axon: 
+			out += "\t"+str(synapse.id)+"\n"  
 
-main() 
+		return out 
+
