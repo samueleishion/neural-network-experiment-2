@@ -19,6 +19,7 @@ def get_click():
 	return x,y 
 
 def was_click_perceived(network,x,y): 
+	# if(x<=45 and y<=20 and REPORT):
 	for i in range(network.size()): 
 		item = network.get(i)
 		nr = item.body.getRadius() 
@@ -27,7 +28,16 @@ def was_click_perceived(network,x,y):
 		if(( nx-nr <= x <= nx+nr ) and ( ny-nr <= y <= ny+nr )): 
 			if(item.is_sensorial()): 
 				# print str(item.id)+" \t"+str(item.type)
+				network.use(item.id) 
 				item.lightup(INTENSITY) 
+				network.get_hits() 
 				return True 
 
 	return False 
+
+def draw_report_button(): 
+	point = Point(24,12) 
+	text = Text(point,"Report") 
+	text.draw(win) 
+	point = Point(45,20) 
+	point.draw(win) 

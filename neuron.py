@@ -17,31 +17,34 @@ class Neuron:
 		self.sub = 0 # subtotal value of sensor and weight 
 		self.x = 0 
 		self.y = 0 
+		self.hits = 0 
 
 	def lightup(self,sensor): 
-		if(self.is_terminal() or sensor>0):
+		if(sensor>0):
+			if(self.is_terminal()): 
+				self.hits += 1  
+
 			gb = 0 
 			self.body.setFill(self.get_color(gb)) 
 			self.send(sensor) 
-			while(gb<=255): 
-				self.body.setFill(self.get_color(gb)) 
-				sleep(0.03) 
-				gb += 51 
+			# while(gb<=255): 
+			# 	self.body.setFill(self.get_color(gb)) 
+			# 	sleep(0.02) 
+			# 	gb += 51 
+			self.body.setFill(self.get_color(255)) 
 
 	def send(self,sensor): 
 		expected = 1 if bool(sensor) else 0 # desired output 
 		self.sub += sensor*self.weight # accumulated value 
 
 		# determine whether there's value to send 
-		# print str(self.sub)+">"+str(self.th) 
 		while(self.sub>self.th): 
 			out = 1 
-			self.sub -= self.th # correct weight value based on error margin 
+			self.sub -= self.th 
 			error = expected-out 
 			correction = self.lr*error 
-			self.weight += correction 
+			self.weight += correction # correct weight value based on error margin 
 
-			# print str(self.id)+"->"+str(out) 
 			for synapse in self.axon: 
 				synapse.lightup(out) 
 
