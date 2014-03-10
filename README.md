@@ -53,7 +53,7 @@ TERMINAL_NEURONS = 10
 * type: int 
 * default value: 10 
 
-#### Sensation intensiry 
+#### Sensation intensity 
 ``` 
 INTENSITY = 20 
 ``` 
@@ -68,7 +68,7 @@ AUTOMATIC = False
 * purpose: allows the sensations to be automatically distributed 
 * type: boolean 
 * default value: False
-* detail: by setting this feature to `True` facilitates the graph visualization and experimentation 
+* detail: setting this feature to `True` facilitates the graph visualization and experimentation 
 
 ```
 GRAPH = True 
@@ -85,12 +85,12 @@ If the `GRAPH` feature is set to `True`, the y-axis represents the sensorial neu
 For example, we have 3 sensory neurons and 4 terminal neurons. This would be a numeric representation of the graph: 
 
 |    | T1 | T2 | T3 | T4 | 
-| -- |:--:|:--:|:--:|:--:|
+| ---- |:-------------:|:-------------:|:-------------:|:-------------:|
 | **S1** | 0 | 0 | 0 | 0 |
 | **S2** | 0 | 0 | 0 | 0 |
 | **S3** | 0 | 0 | 0 | 0 | 
 
-After several interaction, say that: 
+After several interactions, say that: 
 * S1 has successfully transmitted 
   * 3 sensations to T1
   * 2 sensations to T2
@@ -106,7 +106,7 @@ After several interaction, say that:
 Our graph will now be: 
 
 |    | T1 | T2 | T3 | T4 | 
-| -- |:--:|:--:|:--:|:--:|
+| ---- |:-------------:|:-------------:|:-------------:|:-------------:|
 | **S1** | .6 | .4 | 0 | 0 |
 | **S2** | 0 | .17 | .5 | .33 |
 | **S3** | .29 | 0 | .57 | .14 | 
