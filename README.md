@@ -111,4 +111,4 @@ Our graph will now be:
 | **S2** | 0 | .17 | .5 | .33 |
 | **S3** | .29 | 0 | .57 | .14 | 
 
-On the actual visualization, this decimals are used to calculate the intensity of the color. 
+On the actual visualization, these decimals are used to calculate the intensity of the color. 
